@@ -1,0 +1,6 @@
+Model,DisplayName,Threshold_Youden
+Radiomics_Only,Echo-Net,0.039696969696969696
+Radiomics_plus_A,Echo-Net+A,0.6039393939393939
+Radiomics_plus_AllClinical,Echo-Net+All,0.594040404040404
+ClinicalA_Only,Clinical-A,0.4208080808080808
+BaseClinical_Only,Clinical-Base,0.43565656565656563

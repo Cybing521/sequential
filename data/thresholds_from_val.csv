@@ -1,0 +1,6 @@
+Model,Threshold_Youden
+Radiomics_Only（M1）,0.039696969696969696
+Radiomics_plus_A（M2）,0.8514141414141414
+Radiomics_plus_AllClinical（M3）,0.594040404040404
+ClinicalA_Only（M4）,0.4208080808080808
+BaseClinical_Only（M5）,0.43565656565656563

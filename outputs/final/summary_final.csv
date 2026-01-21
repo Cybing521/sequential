@@ -1,0 +1,11 @@
+Cohort,Strategy,N,Sensitivity,Specificity,PPV,NPV,Accuracy,Step2_Entry,Referral_Rate,TP,TN,FP,FN
+InternalTest,Two-step (M4→M3),51.0,0.636,0.862,0.778,0.758,0.765,23.0,0.353,14.0,25.0,4.0,8.0
+InternalTest,Two-step (M5→M3),51.0,0.682,0.897,0.833,0.788,0.804,30.0,0.353,15.0,26.0,3.0,7.0
+InternalTest,Single (M5),,0.682,0.552,0.567,0.762,0.646,,,,,,
+InternalTest,Single (M4),,0.773,0.759,0.682,0.759,0.707,,,,,,
+InternalTest,Single (M3),,0.909,0.897,0.842,0.92,0.823,,,,,,
+ProspectiveTest,Two-step (M4→M3),100.0,0.692,0.852,0.75,0.812,0.79,57.0,0.36,27.0,52.0,9.0,12.0
+ProspectiveTest,Two-step (M5→M3),100.0,0.692,0.852,0.75,0.812,0.79,59.0,0.36,27.0,52.0,9.0,12.0
+ProspectiveTest,Single (M5),,0.744,0.541,0.533,0.825,0.659,,,,,,
+ProspectiveTest,Single (M4),,0.744,0.59,0.561,0.837,0.68,,,,,,
+ProspectiveTest,Single (M3),,0.821,0.82,0.725,0.845,0.81,,,,,,
