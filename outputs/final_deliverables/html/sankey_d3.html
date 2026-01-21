@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Sequential Screening Sankey</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/d3-sankey@0.12.3/dist/d3-sankey.min.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            min-height: 100vh;
+            padding: 30px;
+        }
+        h1 {
+            text-align: center;
+            color: #fff;
+            margin-bottom: 25px;
+            font-size: 26px;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        .chart-card {
+            background: rgba(255,255,255,0.95);
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+        }
+        .chart-title {
+            text-align: center;
+            color: #2c3e50;
+            font-size: 15px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        .chart-svg {
+            width: 100%;
+            height: 320px;
+        }
+        .metrics-row {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 12px;
+            flex-wrap: wrap;
+        }
+        .metric-badge {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 500;
+        }
+        .node rect {
+            stroke: #fff;
+            stroke-width: 2;
+        }
+        .link {
+            fill: none;
+            stroke-opacity: 0.4;
+        }
+        .link:hover {
+            stroke-opacity: 0.7;
+        }
+        .node-label {
+            font-size: 10px;
+            fill: #333;
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔬 Sequential Screening Algorithm - Patient Flow</h1>
+    <div class="grid">
+        <div class="chart-card">
+            <div class="chart-title">Internal Test Set - M4→M3 (Best)</div>
+            <svg id="chart1" class="chart-svg"></svg>
+            <div class="metrics-row">
+                <span class="metric-badge">Acc: 84%</span>
+                <span class="metric-badge">Sen: 86%</span>
+                <span class="metric-badge">Spec: 83%</span>
+                <span class="metric-badge">NPV: 89%</span>
+                <span class="metric-badge">RA: 16%</span>
+            </div>
+        </div>
+        <div class="chart-card">
+            <div class="chart-title">Internal Test Set - M5→M3</div>
+            <svg id="chart2" class="chart-svg"></svg>
+            <div class="metrics-row">
+                <span class="metric-badge">Acc: 84%</span>
+                <span class="metric-badge">Sen: 77%</span>
+                <span class="metric-badge">Spec: 90%</span>
+                <span class="metric-badge">NPV: 84%</span>
+                <span class="metric-badge">RA: 39%</span>
+            </div>
+        </div>
+        <div class="chart-card">
+            <div class="chart-title">Prospective Test Set - M4→M3 ⭐ (Best)</div>
+            <svg id="chart3" class="chart-svg"></svg>
+            <div class="metrics-row">
+                <span class="metric-badge">Acc: 86%</span>
+                <span class="metric-badge">Sen: 92%</span>
+                <span class="metric-badge">Spec: 82%</span>
+                <span class="metric-badge">NPV: 94%</span>
+                <span class="metric-badge">RA: 25%</span>
+            </div>
+        </div>
+        <div class="chart-card">
+            <div class="chart-title">Prospective Test Set - M5→M3</div>
+            <svg id="chart4" class="chart-svg"></svg>
+            <div class="metrics-row">
+                <span class="metric-badge">Acc: 85%</span>
+                <span class="metric-badge">Sen: 87%</span>
+                <span class="metric-badge">Spec: 84%</span>
+                <span class="metric-badge">NPV: 91%</span>
+                <span class="metric-badge">RA: 35%</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const colors = {
+            total: '#3498db',
+            step1pos: '#e74c3c', 
+            step1neg: '#2ecc71',
+            step2pos: '#e67e22',
+            step2neg: '#27ae60',
+            tp: '#16a085',
+            fp: '#c0392b',
+            tn: '#27ae60',
+            fn: '#e74c3c'
+        };
+
+        function createSankey(svgId, data) {
+            const svg = d3.select('#' + svgId);
+            const width = svg.node().getBoundingClientRect().width;
+            const height = svg.node().getBoundingClientRect().height;
+            const margin = {top: 10, right: 120, bottom: 10, left: 10};
+            const innerWidth = width - margin.left - margin.right;
+            const innerHeight = height - margin.top - margin.bottom;
+
+            const sankey = d3.sankey()
+                .nodeId(d => d.name)
+                .nodeWidth(15)
+                .nodePadding(12)
+                .extent([[margin.left, margin.top], [innerWidth, innerHeight]]);
+
+            const {nodes, links} = sankey(data);
+
+            const defs = svg.append('defs');
+            links.forEach((link, i) => {
+                const gradient = defs.append('linearGradient')
+                    .attr('id', `gradient-${svgId}-${i}`)
+                    .attr('gradientUnits', 'userSpaceOnUse')
+                    .attr('x1', link.source.x1)
+                    .attr('x2', link.target.x0);
+                gradient.append('stop').attr('offset', '0%').attr('stop-color', link.source.color);
+                gradient.append('stop').attr('offset', '100%').attr('stop-color', link.target.color);
+            });
+
+            svg.append('g')
+                .selectAll('path')
+                .data(links)
+                .join('path')
+                .attr('class', 'link')
+                .attr('d', d3.sankeyLinkHorizontal())
+                .attr('stroke', (d, i) => `url(#gradient-${svgId}-${i})`)
+                .attr('stroke-width', d => Math.max(1, d.width));
+
+            const node = svg.append('g')
+                .selectAll('g')
+                .data(nodes)
+                .join('g')
+                .attr('class', 'node');
+
+            node.append('rect')
+                .attr('x', d => d.x0)
+                .attr('y', d => d.y0)
+                .attr('height', d => d.y1 - d.y0)
+                .attr('width', d => d.x1 - d.x0)
+                .attr('fill', d => d.color)
+                .attr('rx', 3);
+
+            node.append('text')
+                .attr('class', 'node-label')
+                .attr('x', d => d.x1 + 6)
+                .attr('y', d => (d.y1 + d.y0) / 2)
+                .attr('dy', '0.35em')
+                .text(d => d.name);
+        }
+
+        // Data for Internal M4→M3
+        const data1 = {
+            nodes: [
+                {name: 'Total (51)', color: colors.total},
+                {name: 'Step1+ (43)', color: colors.step1pos},
+                {name: 'Step1- (8)', color: colors.step1neg},
+                {name: 'Step2+ (24)', color: colors.step2pos},
+                {name: 'Step2- (19)', color: colors.step2neg},
+                {name: 'TP (19)', color: colors.tp},
+                {name: 'FP (5)', color: colors.fp},
+                {name: 'TN (7)', color: colors.tn},
+                {name: 'FN (1)', color: colors.fn}
+            ],
+            links: [
+                {source: 'Total (51)', target: 'Step1+ (43)', value: 43},
+                {source: 'Total (51)', target: 'Step1- (8)', value: 8},
+                {source: 'Step1+ (43)', target: 'Step2+ (24)', value: 24},
+                {source: 'Step1+ (43)', target: 'Step2- (19)', value: 19},
+                {source: 'Step2+ (24)', target: 'TP (19)', value: 19},
+                {source: 'Step2+ (24)', target: 'FP (5)', value: 5},
+                {source: 'Step1- (8)', target: 'TN (7)', value: 7},
+                {source: 'Step1- (8)', target: 'FN (1)', value: 1}
+            ]
+        };
+
+        // Data for Internal M5→M3
+        const data2 = {
+            nodes: [
+                {name: 'Total (51)', color: colors.total},
+                {name: 'Step1+ (31)', color: colors.step1pos},
+                {name: 'Step1- (20)', color: colors.step1neg},
+                {name: 'Step2+ (20)', color: colors.step2pos},
+                {name: 'Step2- (11)', color: colors.step2neg},
+                {name: 'TP (17)', color: colors.tp},
+                {name: 'FP (3)', color: colors.fp},
+                {name: 'TN (18)', color: colors.tn},
+                {name: 'FN (2)', color: colors.fn}
+            ],
+            links: [
+                {source: 'Total (51)', target: 'Step1+ (31)', value: 31},
+                {source: 'Total (51)', target: 'Step1- (20)', value: 20},
+                {source: 'Step1+ (31)', target: 'Step2+ (20)', value: 20},
+                {source: 'Step1+ (31)', target: 'Step2- (11)', value: 11},
+                {source: 'Step2+ (20)', target: 'TP (17)', value: 17},
+                {source: 'Step2+ (20)', target: 'FP (3)', value: 3},
+                {source: 'Step1- (20)', target: 'TN (18)', value: 18},
+                {source: 'Step1- (20)', target: 'FN (2)', value: 2}
+            ]
+        };
+
+        // Data for Prospective M4→M3
+        const data3 = {
+            nodes: [
+                {name: 'Total (100)', color: colors.total},
+                {name: 'Step1+ (75)', color: colors.step1pos},
+                {name: 'Step1- (25)', color: colors.step1neg},
+                {name: 'Step2+ (47)', color: colors.step2pos},
+                {name: 'Step2- (28)', color: colors.step2neg},
+                {name: 'TP (36)', color: colors.tp},
+                {name: 'FP (11)', color: colors.fp},
+                {name: 'TN (24)', color: colors.tn},
+                {name: 'FN (1)', color: colors.fn}
+            ],
+            links: [
+                {source: 'Total (100)', target: 'Step1+ (75)', value: 75},
+                {source: 'Total (100)', target: 'Step1- (25)', value: 25},
+                {source: 'Step1+ (75)', target: 'Step2+ (47)', value: 47},
+                {source: 'Step1+ (75)', target: 'Step2- (28)', value: 28},
+                {source: 'Step2+ (47)', target: 'TP (36)', value: 36},
+                {source: 'Step2+ (47)', target: 'FP (11)', value: 11},
+                {source: 'Step1- (25)', target: 'TN (24)', value: 24},
+                {source: 'Step1- (25)', target: 'FN (1)', value: 1}
+            ]
+        };
+
+        // Data for Prospective M5→M3
+        const data4 = {
+            nodes: [
+                {name: 'Total (100)', color: colors.total},
+                {name: 'Step1+ (65)', color: colors.step1pos},
+                {name: 'Step1- (35)', color: colors.step1neg},
+                {name: 'Step2+ (44)', color: colors.step2pos},
+                {name: 'Step2- (21)', color: colors.step2neg},
+                {name: 'TP (34)', color: colors.tp},
+                {name: 'FP (10)', color: colors.fp},
+                {name: 'TN (32)', color: colors.tn},
+                {name: 'FN (3)', color: colors.fn}
+            ],
+            links: [
+                {source: 'Total (100)', target: 'Step1+ (65)', value: 65},
+                {source: 'Total (100)', target: 'Step1- (35)', value: 35},
+                {source: 'Step1+ (65)', target: 'Step2+ (44)', value: 44},
+                {source: 'Step1+ (65)', target: 'Step2- (21)', value: 21},
+                {source: 'Step2+ (44)', target: 'TP (34)', value: 34},
+                {source: 'Step2+ (44)', target: 'FP (10)', value: 10},
+                {source: 'Step1- (35)', target: 'TN (32)', value: 32},
+                {source: 'Step1- (35)', target: 'FN (3)', value: 3}
+            ]
+        };
+
+        // Wait for DOM then create charts
+        setTimeout(() => {
+            createSankey('chart1', data1);
+            createSankey('chart2', data2);
+            createSankey('chart3', data3);
+            createSankey('chart4', data4);
+        }, 100);
+    </script>
+</body>
+</html>

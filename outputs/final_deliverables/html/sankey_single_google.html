@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Sankey Diagram</title>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: #fff;
+            padding: 15px;
+        }
+        .card {
+            background: #fff;
+            border-radius: 12px;
+            padding: 15px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        .card.best { border: 3px solid #f39c12; }
+        .card-title {
+            text-align: center;
+            color: #2c3e50;
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        #chart {
+            width: 100%;
+            height: 400px;
+        }
+        .metrics {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+        .metric {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+    <div class="card" id="cardContainer">
+        <div class="card-title" id="title">Loading...</div>
+        <div id="chart"></div>
+        <div class="metrics" id="metrics"></div>
+    </div>
+
+    <script>
+        const configs = {
+            'internal_m4m3': {
+                title: 'Internal Test Set - M4→M3 ⭐ Best Configuration',
+                best: true,
+                metrics: ['Acc: 84%', 'Sen: 86%', 'Spec: 83%', 'PPV: 79%', 'NPV: 89%', 'RA: 16%'],
+                data: [
+                    ['Total (n=51)', 'Step1+ (n=43)', 43],
+                    ['Total (n=51)', 'Step1- (n=8)', 8],
+                    ['Step1+ (n=43)', 'Step2+ (n=24)', 24],
+                    ['Step1+ (n=43)', 'Step2- (n=19)', 19],
+                    ['Step2+ (n=24)', 'TP (n=19)', 19],
+                    ['Step2+ (n=24)', 'FP (n=5)', 5],
+                    ['Step1- (n=8)', 'TN (n=7)', 7],
+                    ['Step1- (n=8)', 'FN (n=1)', 1]
+                ]
+            },
+            'internal_m5m3': {
+                title: 'Internal Test Set - M5→M3',
+                best: false,
+                metrics: ['Acc: 84%', 'Sen: 77%', 'Spec: 90%', 'PPV: 85%', 'NPV: 84%', 'RA: 39%'],
+                data: [
+                    ['Total (n=51)', 'Step1+ (n=31)', 31],
+                    ['Total (n=51)', 'Step1- (n=20)', 20],
+                    ['Step1+ (n=31)', 'Step2+ (n=20)', 20],
+                    ['Step1+ (n=31)', 'Step2- (n=11)', 11],
+                    ['Step2+ (n=20)', 'TP (n=17)', 17],
+                    ['Step2+ (n=20)', 'FP (n=3)', 3],
+                    ['Step1- (n=20)', 'TN (n=18)', 18],
+                    ['Step1- (n=20)', 'FN (n=2)', 2]
+                ]
+            },
+            'prospective_m4m3': {
+                title: 'Prospective Test Set - M4→M3 ⭐ Best Configuration',
+                best: true,
+                metrics: ['Acc: 86%', 'Sen: 92%', 'Spec: 82%', 'PPV: 77%', 'NPV: 94%', 'RA: 25%'],
+                data: [
+                    ['Total (n=100)', 'Step1+ (n=75)', 75],
+                    ['Total (n=100)', 'Step1- (n=25)', 25],
+                    ['Step1+ (n=75)', 'Step2+ (n=47)', 47],
+                    ['Step1+ (n=75)', 'Step2- (n=28)', 28],
+                    ['Step2+ (n=47)', 'TP (n=36)', 36],
+                    ['Step2+ (n=47)', 'FP (n=11)', 11],
+                    ['Step1- (n=25)', 'TN (n=24)', 24],
+                    ['Step1- (n=25)', 'FN (n=1)', 1]
+                ]
+            },
+            'prospective_m5m3': {
+                title: 'Prospective Test Set - M5→M3',
+                best: false,
+                metrics: ['Acc: 85%', 'Sen: 87%', 'Spec: 84%', 'PPV: 77%', 'NPV: 91%', 'RA: 35%'],
+                data: [
+                    ['Total (n=100)', 'Step1+ (n=65)', 65],
+                    ['Total (n=100)', 'Step1- (n=35)', 35],
+                    ['Step1+ (n=65)', 'Step2+ (n=44)', 44],
+                    ['Step1+ (n=65)', 'Step2- (n=21)', 21],
+                    ['Step2+ (n=44)', 'TP (n=34)', 34],
+                    ['Step2+ (n=44)', 'FP (n=10)', 10],
+                    ['Step1- (n=35)', 'TN (n=32)', 32],
+                    ['Step1- (n=35)', 'FN (n=3)', 3]
+                ]
+            }
+        };
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const type = urlParams.get('type') || 'internal_m4m3';
+        const config = configs[type];
+
+        document.getElementById('title').textContent = config.title;
+        if (config.best) document.getElementById('cardContainer').classList.add('best');
+        document.getElementById('metrics').innerHTML = config.metrics.map(m => 
+            '<span class="metric">' + m + '</span>'
+        ).join('');
+
+        google.charts.load('current', {'packages':['sankey']});
+        google.charts.setOnLoadCallback(drawChart);
+
+        function drawChart() {
+            var data = new google.visualization.DataTable();
+            data.addColumn('string', 'From');
+            data.addColumn('string', 'To');
+            data.addColumn('number', 'Patients');
+            data.addRows(config.data);
+
+            var options = {
+                sankey: {
+                    node: {
+                        colors: ['#3498db', '#e74c3c', '#2ecc71', '#e67e22', '#27ae60', '#16a085', '#c0392b'],
+                        label: { fontSize: 12, color: '#333', bold: true },
+                        nodePadding: 25,
+                        width: 15
+                    },
+                    link: {
+                        colorMode: 'gradient'
+                    }
+                }
+            };
+
+            var chart = new google.visualization.Sankey(document.getElementById('chart'));
+            chart.draw(data, options);
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Sankey Diagram</title>
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+    <style>
+        * { margin: 0; padding: 0; }
+        body { background: #fff; }
+        #chart { width: 800px; height: 500px; margin: 20px auto; }
+        h2 { text-align: center; color: #2c3e50; padding: 20px; font-family: Arial; }
+        .metrics { 
+            display: flex; 
+            justify-content: center; 
+            gap: 15px; 
+            padding: 15px;
+            font-family: Arial;
+        }
+        .metric {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 25px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+    <h2 id="title">Loading...</h2>
+    <div id="chart"></div>
+    <div class="metrics" id="metrics"></div>
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const type = urlParams.get('type') || 'internal_m4m3';
+        
+        const configs = {
+            'internal_m4m3': {
+                title: 'Internal Test Set - M4→M3 (Best Configuration)',
+                metrics: ['Acc: 84%', 'Sen: 86%', 'Spec: 83%', 'NPV: 89%', 'RA: 16%'],
+                nodes: [
+                    {name: 'Total Patients\n(n=51)', itemStyle: {color: '#3498db'}},
+                    {name: 'Step1 Positive\n(n=43)', itemStyle: {color: '#e74c3c'}},
+                    {name: 'Step1 Negative\n(n=8)', itemStyle: {color: '#2ecc71'}},
+                    {name: 'Step2 Positive\n(n=24)', itemStyle: {color: '#e67e22'}},
+                    {name: 'Step2 Negative\n(n=19)', itemStyle: {color: '#27ae60'}},
+                    {name: 'True Positive\n(n=19)', itemStyle: {color: '#16a085'}},
+                    {name: 'False Positive\n(n=5)', itemStyle: {color: '#c0392b'}},
+                    {name: 'True Negative\n(n=7)', itemStyle: {color: '#27ae60'}},
+                    {name: 'False Negative\n(n=1)', itemStyle: {color: '#e74c3c'}}
+                ],
+                links: [
+                    {source: 'Total Patients\n(n=51)', target: 'Step1 Positive\n(n=43)', value: 43},
+                    {source: 'Total Patients\n(n=51)', target: 'Step1 Negative\n(n=8)', value: 8},
+                    {source: 'Step1 Positive\n(n=43)', target: 'Step2 Positive\n(n=24)', value: 24},
+                    {source: 'Step1 Positive\n(n=43)', target: 'Step2 Negative\n(n=19)', value: 19},
+                    {source: 'Step2 Positive\n(n=24)', target: 'True Positive\n(n=19)', value: 19},
+                    {source: 'Step2 Positive\n(n=24)', target: 'False Positive\n(n=5)', value: 5},
+                    {source: 'Step1 Negative\n(n=8)', target: 'True Negative\n(n=7)', value: 7},
+                    {source: 'Step1 Negative\n(n=8)', target: 'False Negative\n(n=1)', value: 1}
+                ]
+            },
+            'internal_m5m3': {
+                title: 'Internal Test Set - M5→M3',
+                metrics: ['Acc: 84%', 'Sen: 77%', 'Spec: 90%', 'NPV: 84%', 'RA: 39%'],
+                nodes: [
+                    {name: 'Total Patients\n(n=51)', itemStyle: {color: '#3498db'}},
+                    {name: 'Step1 Positive\n(n=31)', itemStyle: {color: '#e74c3c'}},
+                    {name: 'Step1 Negative\n(n=20)', itemStyle: {color: '#2ecc71'}},
+                    {name: 'Step2 Positive\n(n=20)', itemStyle: {color: '#e67e22'}},
+                    {name: 'Step2 Negative\n(n=11)', itemStyle: {color: '#27ae60'}},
+                    {name: 'True Positive\n(n=17)', itemStyle: {color: '#16a085'}},
+                    {name: 'False Positive\n(n=3)', itemStyle: {color: '#c0392b'}},
+                    {name: 'True Negative\n(n=18)', itemStyle: {color: '#27ae60'}},
+                    {name: 'False Negative\n(n=2)', itemStyle: {color: '#e74c3c'}}
+                ],
+                links: [
+                    {source: 'Total Patients\n(n=51)', target: 'Step1 Positive\n(n=31)', value: 31},
+                    {source: 'Total Patients\n(n=51)', target: 'Step1 Negative\n(n=20)', value: 20},
+                    {source: 'Step1 Positive\n(n=31)', target: 'Step2 Positive\n(n=20)', value: 20},
+                    {source: 'Step1 Positive\n(n=31)', target: 'Step2 Negative\n(n=11)', value: 11},
+                    {source: 'Step2 Positive\n(n=20)', target: 'True Positive\n(n=17)', value: 17},
+                    {source: 'Step2 Positive\n(n=20)', target: 'False Positive\n(n=3)', value: 3},
+                    {source: 'Step1 Negative\n(n=20)', target: 'True Negative\n(n=18)', value: 18},
+                    {source: 'Step1 Negative\n(n=20)', target: 'False Negative\n(n=2)', value: 2}
+                ]
+            },
+            'prospective_m4m3': {
+                title: 'Prospective Test Set - M4→M3 ⭐ (Best Configuration)',
+                metrics: ['Acc: 86%', 'Sen: 92%', 'Spec: 82%', 'NPV: 94%', 'RA: 25%'],
+                nodes: [
+                    {name: 'Total Patients\n(n=100)', itemStyle: {color: '#3498db'}},
+                    {name: 'Step1 Positive\n(n=75)', itemStyle: {color: '#e74c3c'}},
+                    {name: 'Step1 Negative\n(n=25)', itemStyle: {color: '#2ecc71'}},
+                    {name: 'Step2 Positive\n(n=47)', itemStyle: {color: '#e67e22'}},
+                    {name: 'Step2 Negative\n(n=28)', itemStyle: {color: '#27ae60'}},
+                    {name: 'True Positive\n(n=36)', itemStyle: {color: '#16a085'}},
+                    {name: 'False Positive\n(n=11)', itemStyle: {color: '#c0392b'}},
+                    {name: 'True Negative\n(n=24)', itemStyle: {color: '#27ae60'}},
+                    {name: 'False Negative\n(n=1)', itemStyle: {color: '#e74c3c'}}
+                ],
+                links: [
+                    {source: 'Total Patients\n(n=100)', target: 'Step1 Positive\n(n=75)', value: 75},
+                    {source: 'Total Patients\n(n=100)', target: 'Step1 Negative\n(n=25)', value: 25},
+                    {source: 'Step1 Positive\n(n=75)', target: 'Step2 Positive\n(n=47)', value: 47},
+                    {source: 'Step1 Positive\n(n=75)', target: 'Step2 Negative\n(n=28)', value: 28},
+                    {source: 'Step2 Positive\n(n=47)', target: 'True Positive\n(n=36)', value: 36},
+                    {source: 'Step2 Positive\n(n=47)', target: 'False Positive\n(n=11)', value: 11},
+                    {source: 'Step1 Negative\n(n=25)', target: 'True Negative\n(n=24)', value: 24},
+                    {source: 'Step1 Negative\n(n=25)', target: 'False Negative\n(n=1)', value: 1}
+                ]
+            },
+            'prospective_m5m3': {
+                title: 'Prospective Test Set - M5→M3',
+                metrics: ['Acc: 85%', 'Sen: 87%', 'Spec: 84%', 'NPV: 91%', 'RA: 35%'],
+                nodes: [
+                    {name: 'Total Patients\n(n=100)', itemStyle: {color: '#3498db'}},
+                    {name: 'Step1 Positive\n(n=65)', itemStyle: {color: '#e74c3c'}},
+                    {name: 'Step1 Negative\n(n=35)', itemStyle: {color: '#2ecc71'}},
+                    {name: 'Step2 Positive\n(n=44)', itemStyle: {color: '#e67e22'}},
+                    {name: 'Step2 Negative\n(n=21)', itemStyle: {color: '#27ae60'}},
+                    {name: 'True Positive\n(n=34)', itemStyle: {color: '#16a085'}},
+                    {name: 'False Positive\n(n=10)', itemStyle: {color: '#c0392b'}},
+                    {name: 'True Negative\n(n=32)', itemStyle: {color: '#27ae60'}},
+                    {name: 'False Negative\n(n=3)', itemStyle: {color: '#e74c3c'}}
+                ],
+                links: [
+                    {source: 'Total Patients\n(n=100)', target: 'Step1 Positive\n(n=65)', value: 65},
+                    {source: 'Total Patients\n(n=100)', target: 'Step1 Negative\n(n=35)', value: 35},
+                    {source: 'Step1 Positive\n(n=65)', target: 'Step2 Positive\n(n=44)', value: 44},
+                    {source: 'Step1 Positive\n(n=65)', target: 'Step2 Negative\n(n=21)', value: 21},
+                    {source: 'Step2 Positive\n(n=44)', target: 'True Positive\n(n=34)', value: 34},
+                    {source: 'Step2 Positive\n(n=44)', target: 'False Positive\n(n=10)', value: 10},
+                    {source: 'Step1 Negative\n(n=35)', target: 'True Negative\n(n=32)', value: 32},
+                    {source: 'Step1 Negative\n(n=35)', target: 'False Negative\n(n=3)', value: 3}
+                ]
+            }
+        };
+
+        const config = configs[type];
+        document.getElementById('title').textContent = config.title;
+        document.getElementById('metrics').innerHTML = config.metrics.map(m => 
+            '<span class="metric">' + m + '</span>'
+        ).join('');
+
+        const chart = echarts.init(document.getElementById('chart'));
+        chart.setOption({
+            tooltip: {
+                trigger: 'item',
+                formatter: function(params) {
+                    if (params.dataType === 'node') return '<b>' + params.name.replace('\n', ' ') + '</b>';
+                    return params.data.source.replace('\n', ' ') + ' → ' + 
+                           params.data.target.replace('\n', ' ') + '<br/><b>n = ' + params.data.value + '</b>';
+                }
+            },
+            series: [{
+                type: 'sankey',
+                left: 60,
+                right: 150,
+                top: 30,
+                bottom: 30,
+                emphasis: { focus: 'adjacency' },
+                nodeAlign: 'justify',
+                nodeGap: 12,
+                nodeWidth: 18,
+                data: config.nodes,
+                links: config.links,
+                lineStyle: {
+                    color: 'gradient',
+                    curveness: 0.5,
+                    opacity: 0.5
+                },
+                label: {
+                    position: 'right',
+                    fontSize: 11,
+                    color: '#333',
+                    formatter: function(params) {
+                        return params.name.replace('\n', ' ');
+                    }
+                },
+                itemStyle: { borderWidth: 0 }
+            }]
+        });
+    </script>
+</body>
+</html>
