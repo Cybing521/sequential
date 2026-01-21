@@ -7,50 +7,58 @@
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            font-family: 'Segoe UI', Arial, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: #fff;
-            padding: 15px;
+            padding: 20px;
         }
         .card {
-            background: #fff;
-            border-radius: 12px;
-            padding: 15px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-            max-width: 700px;
+            max-width: 720px;
             margin: 0 auto;
         }
-        .card.best { border: 3px solid #f39c12; }
         .card-title {
             text-align: center;
-            color: #2c3e50;
-            font-size: 16px;
+            color: #333;
+            font-size: 15px;
             font-weight: 600;
-            margin-bottom: 10px;
+            margin-bottom: 5px;
+        }
+        .card-subtitle {
+            text-align: center;
+            color: #666;
+            font-size: 12px;
+            margin-bottom: 15px;
         }
         #chart {
             width: 100%;
-            height: 400px;
+            height: 420px;
         }
         .metrics {
             display: flex;
             justify-content: center;
-            gap: 10px;
+            gap: 15px;
             margin-top: 15px;
-            flex-wrap: wrap;
+            padding-top: 15px;
+            border-top: 1px solid #eee;
         }
         .metric {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 500;
+            text-align: center;
+        }
+        .metric-value {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+        }
+        .metric-label {
+            font-size: 11px;
+            color: #888;
+            margin-top: 2px;
         }
     </style>
 </head>
 <body>
-    <div class="card" id="cardContainer">
+    <div class="card">
         <div class="card-title" id="title">Loading...</div>
+        <div class="card-subtitle" id="subtitle"></div>
         <div id="chart"></div>
         <div class="metrics" id="metrics"></div>
     </div>
@@ -58,9 +66,15 @@
     <script>
         const configs = {
             'internal_m4m3': {
-                title: 'Internal Test Set - M4→M3 ⭐ Best Configuration',
-                best: true,
-                metrics: ['Acc: 84%', 'Sen: 86%', 'Spec: 83%', 'PPV: 79%', 'NPV: 89%', 'RA: 16%'],
+                title: 'Internal Test Set',
+                subtitle: 'Two-step Screening: M4 → M3',
+                metrics: [
+                    {label: 'Accuracy', value: '84%'},
+                    {label: 'Sensitivity', value: '86%'},
+                    {label: 'Specificity', value: '83%'},
+                    {label: 'NPV', value: '89%'},
+                    {label: 'Referrals Avoided', value: '16%'}
+                ],
                 data: [
                     ['Total (n=51)', 'Step1+ (n=43)', 43],
                     ['Total (n=51)', 'Step1- (n=8)', 8],
@@ -73,9 +87,15 @@
                 ]
             },
             'internal_m5m3': {
-                title: 'Internal Test Set - M5→M3',
-                best: false,
-                metrics: ['Acc: 84%', 'Sen: 77%', 'Spec: 90%', 'PPV: 85%', 'NPV: 84%', 'RA: 39%'],
+                title: 'Internal Test Set',
+                subtitle: 'Two-step Screening: M5 → M3',
+                metrics: [
+                    {label: 'Accuracy', value: '84%'},
+                    {label: 'Sensitivity', value: '77%'},
+                    {label: 'Specificity', value: '90%'},
+                    {label: 'NPV', value: '84%'},
+                    {label: 'Referrals Avoided', value: '39%'}
+                ],
                 data: [
                     ['Total (n=51)', 'Step1+ (n=31)', 31],
                     ['Total (n=51)', 'Step1- (n=20)', 20],
@@ -88,9 +108,15 @@
                 ]
             },
             'prospective_m4m3': {
-                title: 'Prospective Test Set - M4→M3 ⭐ Best Configuration',
-                best: true,
-                metrics: ['Acc: 86%', 'Sen: 92%', 'Spec: 82%', 'PPV: 77%', 'NPV: 94%', 'RA: 25%'],
+                title: 'Prospective Test Set',
+                subtitle: 'Two-step Screening: M4 → M3',
+                metrics: [
+                    {label: 'Accuracy', value: '86%'},
+                    {label: 'Sensitivity', value: '92%'},
+                    {label: 'Specificity', value: '82%'},
+                    {label: 'NPV', value: '94%'},
+                    {label: 'Referrals Avoided', value: '25%'}
+                ],
                 data: [
                     ['Total (n=100)', 'Step1+ (n=75)', 75],
                     ['Total (n=100)', 'Step1- (n=25)', 25],
@@ -103,9 +129,15 @@
                 ]
             },
             'prospective_m5m3': {
-                title: 'Prospective Test Set - M5→M3',
-                best: false,
-                metrics: ['Acc: 85%', 'Sen: 87%', 'Spec: 84%', 'PPV: 77%', 'NPV: 91%', 'RA: 35%'],
+                title: 'Prospective Test Set',
+                subtitle: 'Two-step Screening: M5 → M3',
+                metrics: [
+                    {label: 'Accuracy', value: '85%'},
+                    {label: 'Sensitivity', value: '87%'},
+                    {label: 'Specificity', value: '84%'},
+                    {label: 'NPV', value: '91%'},
+                    {label: 'Referrals Avoided', value: '35%'}
+                ],
                 data: [
                     ['Total (n=100)', 'Step1+ (n=65)', 65],
                     ['Total (n=100)', 'Step1- (n=35)', 35],
@@ -124,9 +156,9 @@
         const config = configs[type];
 
         document.getElementById('title').textContent = config.title;
-        if (config.best) document.getElementById('cardContainer').classList.add('best');
+        document.getElementById('subtitle').textContent = config.subtitle;
         document.getElementById('metrics').innerHTML = config.metrics.map(m => 
-            '<span class="metric">' + m + '</span>'
+            '<div class="metric"><div class="metric-value">' + m.value + '</div><div class="metric-label">' + m.label + '</div></div>'
         ).join('');
 
         google.charts.load('current', {'packages':['sankey']});
@@ -142,10 +174,15 @@
             var options = {
                 sankey: {
                     node: {
-                        colors: ['#3498db', '#e74c3c', '#2ecc71', '#e67e22', '#27ae60', '#16a085', '#c0392b'],
-                        label: { fontSize: 12, color: '#333', bold: true },
-                        nodePadding: 25,
-                        width: 15
+                        colors: ['#4A90A4', '#E07B54', '#5BA97B', '#D4A84B', '#6BAB8C', '#5BA97B', '#C46D6D', '#6BAB8C', '#C46D6D'],
+                        label: { 
+                            fontName: 'Arial',
+                            fontSize: 12, 
+                            color: '#333', 
+                            bold: false 
+                        },
+                        nodePadding: 30,
+                        width: 12
                     },
                     link: {
                         colorMode: 'gradient'
