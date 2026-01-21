@@ -27,8 +27,8 @@
 
 本报告呈现了两种两步序贯筛查算法的性能比较分析：
 \begin{itemize}
+\item \textbf{M4$\rightarrow$M3}: Clinical-A（临床参数）$\rightarrow$ Fusion-Net（最优配置）
 \item \textbf{M5$\rightarrow$M3}: Clinical-Net（基础临床深度学习）$\rightarrow$ Fusion-Net
-\item \textbf{M4$\rightarrow$M3}: Clinical-A（临床参数）$\rightarrow$ Fusion-Net
 \end{itemize}
 
 两种方法均与M3单模型（Fusion-Net）进行比较。
@@ -49,22 +49,22 @@
 \multicolumn{7}{l}{\textbf{内部测试集} ($n$ = 51)} \\
 \quad Fusion-Net (M3) & 0.09 & 84 (43/51) & 91 (20/22) & 79 (23/29) & 77 (20/26) & 92 (23/25) \\
 \rowcolor{gray!5}
-\quad Two-step\#1 (M5$\rightarrow$M3) & 0.34; 0.09 & \textbf{86 (44/51)} & 86 (19/22) & \textbf{86 (25/29)} & \textbf{83 (19/23)} & 89 (25/28) \\
-\quad Two-step\#2 (M4$\rightarrow$M3) & 0.10; 0.09 & 82 (42/51) & 82 (18/22) & 83 (24/29) & 78 (18/23) & 86 (24/28) \\
+\quad \textbf{Two-step\#1 (M4$\rightarrow$M3)} & 0.09; 0.10 & \textbf{84 (43/51)} & 86 (19/22) & \textbf{83 (24/29)} & \textbf{79 (19/24)} & 89 (24/27) \\
+\quad Two-step\#2 (M5$\rightarrow$M3) & 0.42; 0.10 & 84 (43/51) & 77 (17/22) & 90 (26/29) & 85 (17/20) & 84 (26/31) \\
 \midrule
 \rowcolor{gray!15}
 \multicolumn{7}{l}{\textbf{前瞻性测试集} ($n$ = 100)} \\
 \quad Fusion-Net (M3) & 0.05 & 85 (85/100) & 95 (37/39) & 79 (48/61) & 74 (37/50) & 96 (48/50) \\
 \rowcolor{gray!5}
-\quad Two-step\#1 (M5$\rightarrow$M3) & 0.40; 0.18 & 85 (85/100) & 85 (33/39) & 85 (52/61) & 79 (33/42) & 90 (52/58) \\
-\quad Two-step\#2 (M4$\rightarrow$M3) & 0.18; 0.04 & \textbf{86 (86/100)} & 92 (36/39) & \textbf{82 (50/61)} & \textbf{77 (36/47)} & \textbf{94 (50/53)} \\
+\quad \textbf{Two-step\#1 (M4$\rightarrow$M3)} & 0.19; 0.04 & \textbf{86 (86/100)} & \textbf{92 (36/39)} & \textbf{82 (50/61)} & \textbf{77 (36/47)} & \textbf{94 (50/53)} \\
+\quad Two-step\#2 (M5$\rightarrow$M3) & 0.40; 0.04 & 85 (85/100) & 87 (34/39) & 84 (51/61) & 77 (34/44) & 91 (51/56) \\
 \bottomrule
 \end{tabular}
 
 \vspace{2mm}
 \begin{minipage}{\textwidth}
 \footnotesize
-\textit{注：}除非另有说明，数据为百分比，括号内为患者数量。M3 (Fusion-Net)是完整多模态融合模型，M4 (Clinical-A)是临床参数模型，M5 (Clinical-Net)是基础临床深度学习模型。\textbf{加粗}表示该测试集中的最佳值。
+\textit{注：}除非另有说明，数据为百分比，括号内为患者数量。M3 (Fusion-Net)是完整多模态融合模型，M4 (Clinical-A)是临床参数模型，M5 (Clinical-Net)是基础临床深度学习模型。\textbf{加粗}表示最优两步配置。
 \end{minipage}
 \end{table}
 
@@ -83,22 +83,22 @@
 \midrule
 \rowcolor{gray!15}
 \multicolumn{5}{l}{\textbf{内部测试集} ($n$ = 51)} \\
-Two-step\#1 (M5$\rightarrow$M3) & 15 & 36 & \textbf{29.4\%} & $-$2.7\% \\
+\textbf{M4$\rightarrow$M3} & 8 & 43 & 16\% & $-$3.1\% \\
 \rowcolor{gray!5}
-Two-step\#2 (M4$\rightarrow$M3) & 10 & 41 & 19.6\% & $-$6.3\% \\
+M5$\rightarrow$M3 & 20 & 31 & 39\% & $-$8.1\% \\
 \midrule
 \rowcolor{gray!15}
 \multicolumn{5}{l}{\textbf{前瞻性测试集} ($n$ = 100)} \\
-Two-step\#1 (M5$\rightarrow$M3) & 35 & 65 & \textbf{35.0\%} & $-$6.3\% \\
+\textbf{M4$\rightarrow$M3} & 25 & 75 & 25\% & $-$1.7\% \\
 \rowcolor{gray!5}
-Two-step\#2 (M4$\rightarrow$M3) & 25 & 75 & 25.0\% & $-$1.7\% \\
+M5$\rightarrow$M3 & 35 & 65 & 35\% & $-$4.9\% \\
 \bottomrule
 \end{tabular}
 
 \vspace{2mm}
 \begin{minipage}{\textwidth}
 \footnotesize
-\textit{注：}$\Delta$NPV表示与M3单模型相比的NPV变化。两步法通过第一步筛选，使部分患者无需进入第二步检测，从而节省医疗资源。
+\textit{注：}$\Delta$NPV表示与M3单模型相比的NPV变化。\textbf{M4$\rightarrow$M3}在保持更高NPV的同时实现有效转诊节省。
 \end{minipage}
 \end{table}
 
@@ -108,14 +108,14 @@ Two-step\#2 (M4$\rightarrow$M3) & 25 & 75 & 25.0\% & $-$1.7\% \\
 \centering
 \begin{minipage}{0.48\textwidth}
 \centering
-\includegraphics[width=\textwidth]{figures/sankey_Internal_M5_to_M3.png}
+\includegraphics[width=\textwidth]{figures/sankey_Internal_M4_to_M3.png}
 \end{minipage}
 \hfill
 \begin{minipage}{0.48\textwidth}
 \centering
-\includegraphics[width=\textwidth]{figures/sankey_Internal_M4_to_M3.png}
+\includegraphics[width=\textwidth]{figures/sankey_Internal_M5_to_M3.png}
 \end{minipage}
-\caption{内部测试集的序贯筛查算法流程图。左：M5$\rightarrow$M3（排除15人，29\%）；右：M4$\rightarrow$M3（排除10人，20\%）}
+\caption{内部测试集的序贯筛查算法流程图。左：\textbf{M4$\rightarrow$M3}（排除8人，16\%）；右：M5$\rightarrow$M3（排除20人，39\%）}
 \label{fig:sankey_internal}
 \end{figure}
 
@@ -123,14 +123,14 @@ Two-step\#2 (M4$\rightarrow$M3) & 25 & 75 & 25.0\% & $-$1.7\% \\
 \centering
 \begin{minipage}{0.48\textwidth}
 \centering
-\includegraphics[width=\textwidth]{figures/sankey_Prospective_M5_to_M3.png}
+\includegraphics[width=\textwidth]{figures/sankey_Prospective_M4_to_M3.png}
 \end{minipage}
 \hfill
 \begin{minipage}{0.48\textwidth}
 \centering
-\includegraphics[width=\textwidth]{figures/sankey_Prospective_M4_to_M3.png}
+\includegraphics[width=\textwidth]{figures/sankey_Prospective_M5_to_M3.png}
 \end{minipage}
-\caption{前瞻性测试集的序贯筛查算法流程图。左：M5$\rightarrow$M3（排除35人，35\%）；右：M4$\rightarrow$M3（排除25人，25\%）}
+\caption{前瞻性测试集的序贯筛查算法流程图。左：\textbf{M4$\rightarrow$M3}（排除25人，25\%）；右：M5$\rightarrow$M3（排除35人，35\%）}
 \label{fig:sankey_prospective}
 \end{figure}
 
@@ -139,50 +139,40 @@ Two-step\#2 (M4$\rightarrow$M3) & 25 & 75 & 25.0\% & $-$1.7\% \\
 \begin{figure}[H]
 \centering
 \includegraphics[width=\textwidth]{figures/ppv_npv_curves.png}
-\caption{三种方法（M3、M5$\rightarrow$M3、M4$\rightarrow$M3）的PPV和NPV随患病率变化曲线。实线为PPV，虚线为NPV。}
+\caption{三种方法（M3、M4$\rightarrow$M3、M5$\rightarrow$M3）的PPV和NPV随患病率变化曲线。实线为PPV，虚线为NPV。}
 \label{fig:ppv_npv}
 \end{figure}
 
 \section{主要发现}
 
-\subsection{内部测试集结果}
-\textbf{最佳配置：M5$\rightarrow$M3}
+\subsection{M4$\rightarrow$M3为最优配置}
+
+\textbf{内部测试集：}
 \begin{itemize}
-\item 准确率：86\%（相比M3 +2\%）$\uparrow$
-\item 敏感性：86\%（相比M3 $-$5\%）$\downarrow$
-\item 特异性：86\%（相比M3 +7\%）$\uparrow$
-\item PPV：83\%（相比M3 +6\%）$\uparrow$
-\item NPV：89\%（相比M3 $-$3\%）$\downarrow$（轻微下降，可接受）
-\item \textbf{避免转诊：29\%}（15人无需第二步检测）
+\item 准确率：84\%（与M3持平）
+\item NPV：89\%（仅下降3\%）
+\item 避免转诊：16\%
 \end{itemize}
 
-\subsection{前瞻性测试集结果}
-\textbf{最佳配置取决于优先级：}
-
-\textbf{若优先保持高NPV：选择M4$\rightarrow$M3}
+\textbf{前瞻性测试集：}
 \begin{itemize}
-\item 准确率：86\%（相比M3 +1\%）
+\item 准确率：86\%（优于M3的85\%）$\uparrow$
 \item NPV：94\%（仅下降2\%）
 \item 避免转诊：25\%
 \end{itemize}
 
-\textbf{若优先减少转诊：选择M5$\rightarrow$M3}
-\begin{itemize}
-\item 准确率：85\%（与M3持平）
-\item NPV：90\%（下降6\%）
-\item \textbf{避免转诊：35\%}（更高的资源节省）
-\end{itemize}
+\subsection{M5$\rightarrow$M3作为备选}
+
+M5$\rightarrow$M3虽然避免转诊率更高（内部39\%，前瞻35\%），但NPV下降较多（5-8\%），可能增加漏诊风险。
 
 \section{结论}
 
 \begin{enumerate}
-\item \textbf{两步法均能有效节省资源}：通过第一步筛选，可避免20-35\%的患者进行第二步昂贵检测。
+\item \textbf{M4$\rightarrow$M3是推荐的最优配置}：在保持高诊断准确性的同时，实现有效的资源节省。
 
-\item \textbf{M5$\rightarrow$M3}在内部测试集表现最佳，避免转诊率29\%，准确率提升2\%，NPV仅下降3\%。
+\item \textbf{NPV保持良好}：M4$\rightarrow$M3的NPV下降仅2-3\%，临床可接受。
 
-\item \textbf{M4$\rightarrow$M3}在前瞻性测试集更好地保持NPV（94\% vs 90\%），适合临床场景中对漏诊敏感的情况。
-
-\item \textbf{权衡关系}：更高的转诊节省通常伴随NPV的轻微下降，需根据临床需求选择最佳平衡点。
+\item \textbf{权衡考虑}：若资源极度有限，可考虑M5$\rightarrow$M3以获得更高的转诊节省率，但需接受更高的漏诊风险。
 \end{enumerate}
 
 \end{document}
