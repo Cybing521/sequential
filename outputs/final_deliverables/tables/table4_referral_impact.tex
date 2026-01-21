@@ -1,41 +1,18 @@
-% Table 4 风格 - 转诊影响分析
-% 模仿 Chen et al. 2024 论文样式
-
 \begin{table}[htbp]
 \centering
-\caption{\textbf{Table 2: Referral Impact of Sequential Algorithms in the Internal and Prospective Test Sets}}
+\caption{Referral Impact of Sequential Screening Algorithms}
 \label{tab:referral_impact}
-\footnotesize
-\renewcommand{\arraystretch}{1.2}
-\begin{tabular}{llccc}
+\begin{tabular}{llcccc}
 \toprule
- & & Referrals & \multicolumn{2}{c}{Detection Performance} \\
-\cmidrule(lr){4-5}
-Algorithm & Comparator & Avoided (\%) & Odds Ratio & $P$ Value \\
+\textbf{Test Set} & \textbf{Algorithm} & \textbf{Referrals Avoided} & \textbf{TP} & \textbf{TN} & \textbf{FN Added} \\
 \midrule
-\rowcolor{gray!10}
-\multicolumn{5}{l}{\textbf{Internal Test Set}} \\
-Two-step\#1 & Clinical-A & 12 & 4.00 (0.85, 18.84) & .22 \\
-\rowcolor{gray!5}
-Two-step\#1 & Clinical-Net & 12 & 3.67 (1.02, 13.14) & .11 \\
-Two-step\#1 & Radiomics-Only & 12 & 3.50 (0.91, 13.47) & .14 \\
-\rowcolor{gray!5}
-Two-step\#1 & Fusion-Net & 12 & 1.50 (0.25, 9.04) & 1.00 \\
+\multirow{2}{*}{Internal} 
+& M4$\rightarrow$M3 & 12\% (6/51) & 20 & 24 & 0 \\
+& M5$\rightarrow$M3 & 25\% (13/51) & 19 & 25 & 1 \\
 \midrule
-\rowcolor{gray!10}
-\multicolumn{5}{l}{\textbf{Prospective Test Set}} \\
-Two-step\#1 & Clinical-A & 53 & 3.00 (1.09, 8.25) & .08 \\
-\rowcolor{gray!5}
-Two-step\#1 & Clinical-Net & 53 & 1.89 (0.84, 4.24) & .17 \\
-Two-step\#1 & Radiomics-Only & 53 & 1.25 (0.51, 3.07) & .73 \\
-\rowcolor{gray!5}
-Two-step\#1 & Fusion-Net & 53 & 0.55 (0.20, 1.47) & .66 \\
+\multirow{2}{*}{Prospective} 
+& M4$\rightarrow$M3 & 25\% (25/100) & 36 & 50 & 1 \\
+& M5$\rightarrow$M3 & 35\% (35/100) & 34 & 51 & 4 \\
 \bottomrule
 \end{tabular}
-
-\vspace{2mm}
-\begin{minipage}{\textwidth}
-\footnotesize
-\textit{Note.}---Data in parentheses are 95\% CIs. Odds ratios were calculated for the algorithm compared with the fibrosis assessment test listed in the ``Comparator'' column. $P$ values from McNemar's tests were used to evaluate the statistical significance of differences in odds ratios between the algorithm and comparator.
-\end{minipage}
 \end{table}

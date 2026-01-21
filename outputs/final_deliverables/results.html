@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Sequential Screening Results</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; background: #f5f5f5; }
+        h1 { color: #333; text-align: center; }
+        h2 { color: #555; margin-top: 30px; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 20px 0; }
+        .card { background: white; padding: 15px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        img { max-width: 100%; height: auto; }
+        table { border-collapse: collapse; width: 100%; margin: 20px 0; }
+        th, td { border: 1px solid #ddd; padding: 10px; text-align: center; }
+        th { background: #4a90a4; color: white; }
+        tr:nth-child(even) { background: #f9f9f9; }
+        .highlight { background: #e8f5e9; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <h1>Sequential Screening Algorithm Results</h1>
+    
+    <h2>Performance Comparison</h2>
+    <table>
+        <tr>
+            <th>Test Set</th>
+            <th>Model</th>
+            <th>Accuracy</th>
+            <th>Sensitivity</th>
+            <th>Specificity</th>
+            <th>PPV</th>
+            <th>NPV</th>
+            <th>RA</th>
+        </tr>
+        <tr>
+            <td rowspan="3">Internal (N=51)</td>
+            <td>M3 (Single)</td>
+            <td>84.3%</td>
+            <td>90.9%</td>
+            <td>79.3%</td>
+            <td>76.9%</td>
+            <td>92.0%</td>
+            <td>-</td>
+        </tr>
+        <tr class="highlight">
+            <td>M4→M3</td>
+            <td>86.3%</td>
+            <td>90.9%</td>
+            <td>82.8%</td>
+            <td>80.0%</td>
+            <td>92.3%</td>
+            <td>12%</td>
+        </tr>
+        <tr>
+            <td>M5→M3</td>
+            <td>86.3%</td>
+            <td>86.4%</td>
+            <td>86.2%</td>
+            <td>82.6%</td>
+            <td>89.3%</td>
+            <td>25%</td>
+        </tr>
+        <tr>
+            <td rowspan="3">Prospective (N=100)</td>
+            <td>M3 (Single)</td>
+            <td>85.0%</td>
+            <td>94.9%</td>
+            <td>78.7%</td>
+            <td>74.0%</td>
+            <td>96.0%</td>
+            <td>-</td>
+        </tr>
+        <tr class="highlight">
+            <td>M4→M3</td>
+            <td>86.0%</td>
+            <td>92.3%</td>
+            <td>82.0%</td>
+            <td>76.6%</td>
+            <td>94.3%</td>
+            <td>25%</td>
+        </tr>
+        <tr>
+            <td>M5→M3</td>
+            <td>85.0%</td>
+            <td>87.2%</td>
+            <td>83.6%</td>
+            <td>77.3%</td>
+            <td>91.1%</td>
+            <td>35%</td>
+        </tr>
+    </table>
+
+    <h2>Sankey Diagrams</h2>
+    <div class="grid">
+        <div class="card">
+            <h3>Internal Test: M4→M3</h3>
+            <img src="figures/sankey_Internal_M4_to_M3.png" alt="Internal M4→M3">
+        </div>
+        <div class="card">
+            <h3>Internal Test: M5→M3</h3>
+            <img src="figures/sankey_Internal_M5_to_M3.png" alt="Internal M5→M3">
+        </div>
+        <div class="card">
+            <h3>Prospective Test: M4→M3</h3>
+            <img src="figures/sankey_Prospective_M4_to_M3.png" alt="Prospective M4→M3">
+        </div>
+        <div class="card">
+            <h3>Prospective Test: M5→M3</h3>
+            <img src="figures/sankey_Prospective_M5_to_M3.png" alt="Prospective M5→M3">
+        </div>
+    </div>
+
+    <h2>PPV/NPV Curves</h2>
+    <div class="card">
+        <img src="figures/ppv_npv_curves.png" alt="PPV NPV Curves">
+    </div>
+</body>
+</html>

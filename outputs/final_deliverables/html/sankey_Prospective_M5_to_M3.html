@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Sankey Diagram</title>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #fff;
+            padding: 20px;
+        }
+        .card {
+            max-width: 720px;
+            margin: 0 auto;
+        }
+        .card-title {
+            text-align: center;
+            color: #333;
+            font-size: 15px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        .card-subtitle {
+            text-align: center;
+            color: #666;
+            font-size: 12px;
+            margin-bottom: 15px;
+        }
+        #chart {
+            width: 100%;
+            height: 420px;
+        }
+        .metrics {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #eee;
+        }
+        .metric {
+            text-align: center;
+        }
+        .metric-value {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+        }
+        .metric-label {
+            font-size: 11px;
+            color: #888;
+            margin-top: 2px;
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <div class="card-title">Prospective Test Set</div>
+        <div class="card-subtitle">Two-step Screening: M5 -> M3</div>
+        <div id="chart"></div>
+        <div class="metrics"><div class="metric"><div class="metric-value">85%</div><div class="metric-label">Accuracy</div></div><div class="metric"><div class="metric-value">87%</div><div class="metric-label">Sensitivity</div></div><div class="metric"><div class="metric-value">84%</div><div class="metric-label">Specificity</div></div><div class="metric"><div class="metric-value">91%</div><div class="metric-label">NPV</div></div><div class="metric"><div class="metric-value">35%</div><div class="metric-label">Referrals Avoided</div></div></div>
+    </div>
+
+    <script>
+        google.charts.load('current', {'packages':['sankey']});
+        google.charts.setOnLoadCallback(drawChart);
+
+        function drawChart() {
+            var data = new google.visualization.DataTable();
+            data.addColumn('string', 'From');
+            data.addColumn('string', 'To');
+            data.addColumn('number', 'Patients');
+            data.addRows([['Total (n=100)', 'Step1 Positive (n=65)', 65], ['Total (n=100)', 'Step1 Negative (n=35)', 35], ['Step1 Positive (n=65)', 'Step2 Positive (n=44)', 44], ['Step1 Positive (n=65)', 'Step2 Negative (n=21)', 21], ['Step2 Positive (n=44)', 'TP (n=34)', 34], ['Step2 Positive (n=44)', 'FP (n=10)', 10], ['Step1 Negative (n=35)', 'TN (n=31)', 31], ['Step1 Negative (n=35)', 'FN (n=4)', 4]]);
+
+            var options = {
+                sankey: {
+                    node: {
+                        colors: ['#4A90A4', '#E07B54', '#5BA97B', '#D4A84B', '#6BAB8C', '#5BA97B', '#C46D6D', '#6BAB8C', '#C46D6D'],
+                        label: { 
+                            fontName: 'Arial',
+                            fontSize: 11, 
+                            color: '#333', 
+                            bold: false 
+                        },
+                        nodePadding: 30,
+                        width: 12
+                    },
+                    link: {
+                        colorMode: 'gradient'
+                    }
+                }
+            };
+
+            var chart = new google.visualization.Sankey(document.getElementById('chart'));
+            chart.draw(data, options);
+        }
+    </script>
+</body>
+</html>
