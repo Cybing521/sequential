@@ -1,0 +1,16 @@
+\contentsline {section}{\numberline {1}研究背景与方法}{2}{section.1}%
+\contentsline {subsection}{\numberline {1.1}研究目的}{2}{subsection.1.1}%
+\contentsline {subsection}{\numberline {1.2}模型说明}{2}{subsection.1.2}%
+\contentsline {subsection}{\numberline {1.3}两步筛选策略}{2}{subsection.1.3}%
+\contentsline {section}{\numberline {2}主要结果}{2}{section.2}%
+\contentsline {subsection}{\numberline {2.1}内部测试集 (Internal Test, n=51)}{2}{subsection.2.1}%
+\contentsline {subsection}{\numberline {2.2}前瞻性测试集 (Prospective Test, n=100)}{2}{subsection.2.2}%
+\contentsline {section}{\numberline {3}改进分析}{3}{section.3}%
+\contentsline {subsection}{\numberline {3.1}与单独临床参数模型 (M4/M5) 相比}{3}{subsection.3.1}%
+\contentsline {subsection}{\numberline {3.2}与单独深度学习模型 (M3) 相比}{3}{subsection.3.2}%
+\contentsline {section}{\numberline {4}临床意义}{4}{section.4}%
+\contentsline {subsection}{\numberline {4.1}患者流向分析 (Prospective Test, M4→M3)}{4}{subsection.4.1}%
+\contentsline {subsection}{\numberline {4.2}混淆矩阵分析}{4}{subsection.4.2}%
+\contentsline {subsection}{\numberline {4.3}临床应用价值}{4}{subsection.4.3}%
+\contentsline {section}{\numberline {5}结论}{4}{section.5}%
+\contentsline {section}{\numberline {6}参考文献}{4}{section.6}%
