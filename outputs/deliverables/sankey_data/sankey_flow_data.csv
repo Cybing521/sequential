@@ -1,0 +1,11 @@
+Cohort,Strategy,Step1_Model,Step1_Threshold,Step2_Model,Step2_Threshold,Step1_Neg_TN,Step1_Neg_FN,Step2_Neg_TN,Step2_Neg_FN,Step2_Pos_FP,Step2_Pos_TP,N_Total,N_Step1_Pos,N_Step1_Neg,N_Step2_Pos,N_Step2_Neg,Step1_Pos_TP,Step1_Pos_FP
+InternalTest,stepwise1 (M4->M1),M4 (Clinical-A),0.4208080808080808,M1 (Radiomics-Only),0.0396969696969696,21,7,6,3,2,12,51,23,28,14,9,15,8
+InternalTest,stepwise2 (M5->M1),M5 (Clinical-Net),0.4356565656565656,M1 (Radiomics-Only),0.0396969696969696,16,5,9,3,4,14,51,30,21,18,12,17,13
+InternalTest,stepwise3 (M5->M2),M5 (Clinical-Net),0.4356565656565656,M2 (Radiomics+A),0.8514141414141414,16,5,10,3,3,14,51,30,21,17,13,17,13
+InternalTest,stepwise4 (M4->M3),M4 (Clinical-A),0.4208080808080808,M3 (Fusion-Net),0.594040404040404,21,7,4,1,4,14,51,23,28,18,5,15,8
+InternalTest,stepwise5 (M5->M3),M5 (Clinical-Net),0.4356565656565656,M3 (Fusion-Net),0.594040404040404,16,5,10,2,3,15,51,30,21,18,12,17,13
+ProspectiveTest,stepwise1 (M4->M1),M4 (Clinical-A),0.4208080808080808,M1 (Radiomics-Only),0.0396969696969696,36,7,17,7,8,25,100,57,43,33,24,32,25
+ProspectiveTest,stepwise2 (M5->M1),M5 (Clinical-Net),0.4356565656565656,M1 (Radiomics-Only),0.0396969696969696,34,7,20,6,7,26,100,59,41,33,26,32,27
+ProspectiveTest,stepwise3 (M5->M2),M5 (Clinical-Net),0.4356565656565656,M2 (Radiomics+A),0.8514141414141414,34,7,22,7,5,25,100,59,41,30,29,32,27
+ProspectiveTest,stepwise4 (M4->M3),M4 (Clinical-A),0.4208080808080808,M3 (Fusion-Net),0.594040404040404,36,7,16,5,9,27,100,57,43,36,21,32,25
+ProspectiveTest,stepwise5 (M5->M3),M5 (Clinical-Net),0.4356565656565656,M3 (Fusion-Net),0.594040404040404,34,7,18,5,9,27,100,59,41,36,23,32,27
