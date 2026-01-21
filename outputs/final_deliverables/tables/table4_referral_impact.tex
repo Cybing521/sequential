@@ -1,0 +1,31 @@
+
+\begin{table}[htbp]
+\centering
+\caption{Referral Impact of Sequential Algorithm in the Internal and Prospective Test Sets}
+\label{tab:referral_impact}
+\small
+\begin{tabular}{llcccc}
+\toprule
+ &  & Referrals & \multicolumn{2}{c}{Detection Performance} \\
+\cmidrule(lr){4-5}
+Algorithm & Comparator & Avoided (\%) & Odds Ratio (95\% CI) & $P$ Value \\
+\midrule
+\multicolumn{5}{l}{\textbf{Internal Test Set}} \\
+  Two-step & Clinical-A & 12 & 4.00 (0.85, 18.84) & 0.22 \\
+  Two-step & Clinical-Net & 12 & 3.67 (1.02, 13.14) & 0.11 \\
+  Two-step & Fusion-Net & 12 & $\infty$ & 2.00 \\
+\midrule
+\multicolumn{5}{l}{\textbf{Prospective Test Set}} \\
+  Two-step & Clinical-A & 53 & 3.00 (1.09, 8.25) & 0.08 \\
+  Two-step & Clinical-Net & 53 & 1.89 (0.84, 4.24) & 0.17 \\
+  Two-step & Fusion-Net & 53 & 0.55 (0.20, 1.47) & 0.66 \\
+
+\bottomrule
+\end{tabular}
+\begin{tablenotes}
+\small
+\item Note.---Data in parentheses are 95\% CIs. Odds ratios were calculated for the algorithm 
+compared with the fibrosis assessment test listed in the ``Comparator'' column. 
+$P$ values from McNemar's tests were used to evaluate the statistical significance.
+\end{tablenotes}
+\end{table}
