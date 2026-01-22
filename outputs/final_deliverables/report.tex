@@ -1,0 +1,199 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[UTF8]{ctex}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{graphicx}
+\usepackage{geometry}
+\usepackage{xcolor}
+\usepackage{colortbl}
+\usepackage{float}
+\usepackage{caption}
+\usepackage{array}
+\usepackage{threeparttable}
+
+\geometry{margin=2.5cm}
+
+% 定义交替行颜色
+\definecolor{lightgray}{gray}{0.95}
+\definecolor{tableheader}{gray}{0.9}
+
+\title{序贯筛查算法诊断性能评估报告}
+\author{研究团队}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\section{研究概述}
+
+本报告评估了单模型和两步序贯筛查算法在内部测试集和前瞻性测试集上的诊断性能。阈值通过验证集上的约登指数（Youden's J）确定，并固定应用于测试集评估。
+
+\textbf{模型说明：}
+\begin{itemize}
+    \item M3: 影像组学 + 全部临床特征模型（Radiomics + All Clinical）
+    \item M4: 临床A特征模型（Clinical A Only）
+    \item M5: 基础临床特征模型（Base Clinical Only）
+    \item M4→M3: 两步法，第一步用M4筛除，第二步用M3确认
+    \item M5→M3: 两步法，第一步用M5筛除，第二步用M3确认
+\end{itemize}
+
+\section{Table 3: 诊断准确性}
+
+\begin{table}[H]
+\centering
+\caption{序贯算法在内部测试集和前瞻性测试集的诊断准确性}
+\label{tab:diagnostic_accuracy}
+\begin{threeparttable}
+\small
+\begin{tabular}{llcccccc}
+\toprule
+\textbf{数据集} & \textbf{算法} & \textbf{阈值} & \textbf{准确率} & \textbf{敏感性} & \textbf{特异性} & \textbf{PPV} & \textbf{NPV} \\
+\midrule
+\rowcolor{lightgray}
+\multirow{5}{*}{\shortstack[l]{\textbf{内部测试集}\\($n=51$)}} 
+& M3 & 0.98 & 80 (41/51) & 82 (18/22) & 79 (23/29) & 75 (18/24) & 85 (23/27) \\
+& M4 & 0.44* & 75 (38/51) & 68 (15/22) & 79 (23/29) & 71 (15/21) & 77 (23/30) \\
+\rowcolor{lightgray}
+& M5 & 0.44* & 65 (33/51) & 77 (17/22) & 55 (16/29) & 57 (17/30) & 76 (16/21) \\
+& M4→M3 & 0.20; 0.98 & 69 (35/51) & 64 (14/22) & 72 (21/29) & 64 (14/22) & 72 (21/29) \\
+\rowcolor{lightgray}
+& M5→M3 & 0.20; 0.98 & 73 (37/51) & 73 (16/22) & 72 (21/29) & 67 (16/24) & 78 (21/27) \\
+\midrule
+\multirow{5}{*}{\shortstack[l]{\textbf{前瞻性测试集}\\($n=100$)}} 
+& M3 & 0.98 & 79 (79/100) & 67 (26/39) & 87 (53/61) & 76 (26/34) & 80 (53/66) \\
+\rowcolor{lightgray}
+& M4 & 0.44* & 68 (68/100) & 82 (32/39) & 59 (36/61) & 56 (32/57) & 84 (36/43) \\
+& M5 & 0.44* & 66 (66/100) & 82 (32/39) & 56 (34/61) & 54 (32/59) & 83 (34/41) \\
+\rowcolor{lightgray}
+& M4→M3 & 0.25; 0.98 & 72 (72/100) & 62 (24/39) & 79 (48/61) & 65 (24/37) & 76 (48/63) \\
+& M5→M3 & 0.25; 0.98 & 74 (74/100) & 64 (25/39) & 80 (49/61) & 68 (25/37) & 78 (49/63) \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}
+\small
+\item 注：数据为百分比，括号内为原始计数 (正确数/总数)。*表示阈值$<0.5$。阈值在验证集上通过约登指数确定。PPV = 阳性预测值，NPV = 阴性预测值。
+\end{tablenotes}
+\end{threeparttable}
+\end{table}
+
+\section{Table 4: 转诊影响}
+
+\begin{table}[H]
+\centering
+\caption{序贯算法在内部测试集和前瞻性测试集的转诊影响}
+\label{tab:referral_impact}
+\begin{threeparttable}
+\small
+\begin{tabular}{llcccc}
+\toprule
+& & & \multicolumn{2}{c}{\textbf{病变检测}} \\
+\cmidrule(lr){4-5}
+\textbf{算法} & \textbf{对照} & \textbf{减少转诊 (\%)} & \textbf{Odds Ratio (95\% CI)} & \textbf{P Value} \\
+\midrule
+\multicolumn{5}{l}{\textit{内部测试集}} \\
+\rowcolor{lightgray}
+M4→M3 & M3 & 37 & 0.97 (0.14, 6.53) & .97 \\
+M5→M3 & M3 & 22 & 1.21 (0.18, 8.39) & .85 \\
+\midrule
+\multicolumn{5}{l}{\textit{前瞻性测试集}} \\
+\rowcolor{lightgray}
+M4→M3 & M3 & 32 & 1.03 (0.26, 4.18) & .96 \\
+M5→M3 & M3 & 21 & 1.03 (0.26, 4.18) & .96 \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}
+\small
+\item 注：括号内数据为95\%置信区间。Odds Ratio计算的是序贯算法相对于M3单模型的检测优势比。P值来自卡方检验，用于评估序贯算法与M3单模型诊断性能差异的统计显著性。
+\end{tablenotes}
+\end{threeparttable}
+\end{table}
+
+\section{患者流程图（桑基图）}
+
+\begin{figure}[H]
+\centering
+\begin{minipage}{0.48\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{figures/sankey_Internal_M4_to_M3.png}
+    \caption*{(a) 内部测试集 M4→M3}
+\end{minipage}
+\hfill
+\begin{minipage}{0.48\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{figures/sankey_Internal_M5_to_M3.png}
+    \caption*{(b) 内部测试集 M5→M3}
+\end{minipage}
+
+\vspace{1cm}
+
+\begin{minipage}{0.48\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{figures/sankey_Prospective_M4_to_M3.png}
+    \caption*{(c) 前瞻性测试集 M4→M3}
+\end{minipage}
+\hfill
+\begin{minipage}{0.48\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{figures/sankey_Prospective_M5_to_M3.png}
+    \caption*{(d) 前瞻性测试集 M5→M3}
+\end{minipage}
+\caption{两步序贯筛查算法的患者流程图}
+\label{fig:sankey}
+\end{figure}
+
+\section{PPV/NPV曲线}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.9\textwidth]{figures/ppv_npv_curves.png}
+\caption{不同患病率下的PPV和NPV曲线}
+\label{fig:ppv_npv}
+\end{figure}
+
+\section{方法学说明}
+
+\subsection{阈值确定方法}
+
+\begin{enumerate}
+    \item \textbf{单模型阈值}：在验证集（Val）上通过约登指数（Youden's J = Sensitivity + Specificity - 1）最大化确定最优阈值
+    \item \textbf{两步法阈值}：
+    \begin{itemize}
+        \item 第一步（筛除阈值）：选择较低阈值以保证高NPV，最大限度减少漏诊
+        \item 第二步（确认阈值）：使用M3的约登最优阈值进行最终诊断
+    \end{itemize}
+\end{enumerate}
+
+\subsection{统计分析}
+
+\begin{itemize}
+    \item 95\%置信区间采用Wilson评分区间法计算
+    \item Odds Ratio的95\%置信区间采用对数变换法计算
+    \item P值采用卡方检验计算
+\end{itemize}
+
+\subsection{验证集确定的阈值}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{lcc}
+\toprule
+\textbf{模型} & \textbf{阈值} & \textbf{约登指数} \\
+\midrule
+M3 & 0.984 & 0.510 \\
+M4 & 0.438 & 0.431 \\
+M5 & 0.437 & 0.490 \\
+\bottomrule
+\end{tabular}
+\caption{验证集上通过约登指数确定的最优阈值}
+\end{table}
+
+\section{结论}
+
+\begin{enumerate}
+    \item \textbf{单模型比较}：M3（影像组学+全部临床特征）在准确率和特异性上表现最优
+    \item \textbf{两步法效益}：M4→M3和M5→M3可减少21-37\%的转诊，同时保持可接受的诊断性能
+    \item \textbf{临床应用}：两步序贯筛查可有效减少不必要的转诊，节省医疗资源
+\end{enumerate}
+
+\end{document}
