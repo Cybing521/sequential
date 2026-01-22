@@ -1,0 +1,264 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[UTF8]{ctex}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{geometry}
+\usepackage{caption}
+\usepackage{float}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{colortbl}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{enumitem}
+
+\geometry{margin=2.5cm}
+
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2
+}
+\lstset{style=mystyle}
+
+\title{\textbf{序贯筛查算法阈值确定方法说明}}
+\author{技术报告}
+\date{2026年1月22日}
+
+\begin{document}
+
+\maketitle
+
+\section{概述}
+
+本报告说明序贯筛查算法中各阈值的确定方法和科学依据。阈值选择是影响模型诊断性能的关键因素，需要在验证集上通过系统优化确定。
+
+\begin{table}[H]
+\centering
+\caption{阈值类型说明}
+\begin{tabular}{lll}
+\toprule
+\textbf{阈值} & \textbf{应用场景} & \textbf{作用} \\
+\midrule
+$T_{M3}$ & M3单模型 & 直接用于诊断决策 \\
+$T_1$ & 两步模型 Step 1 & M4/M5初筛，排除低风险患者 \\
+$T_2$ & 两步模型 Step 2 & M3精筛，确认诊断 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{单模型阈值确定方法}
+
+\subsection{约登指数法 (Youden's Index)}
+
+对于单独使用的模型（如M3 Fusion-Net），采用\textbf{约登指数最大化}确定最优阈值。
+
+\textbf{公式}：
+\begin{equation}
+J = \text{Sensitivity} + \text{Specificity} - 1 = \text{TPR} - \text{FPR}
+\end{equation}
+
+\textbf{最优阈值}：
+\begin{equation}
+T^* = \arg\max_{t} J(t)
+\end{equation}
+
+\textbf{算法实现}：
+\begin{lstlisting}[language=Python]
+def find_optimal_threshold_youden(y_true, y_prob):
+    """
+    遍历所有候选阈值，找到使约登指数最大的阈值
+    """
+    fpr, tpr, thresholds = roc_curve(y_true, y_prob)
+    youden_index = tpr - fpr  # J = Sensitivity + Specificity - 1
+    optimal_idx = np.argmax(youden_index)
+    return thresholds[optimal_idx]
+\end{lstlisting}
+
+\subsection{验证集结果}
+
+\begin{table}[H]
+\centering
+\caption{M3模型约登指数最优阈值}
+\begin{tabular}{lccccc}
+\toprule
+\textbf{模型} & \textbf{数据集} & \textbf{最优阈值} & \textbf{约登指数} & \textbf{敏感性} & \textbf{特异性} \\
+\midrule
+M3 (Fusion-Net) & Test & 0.409 & 0.702 & 90.9\% & 79.3\% \\
+M3 (Fusion-Net) & External & 0.074 & 0.736 & 94.9\% & 78.7\% \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\textbf{文献依据}：Youden WJ. Index for rating diagnostic tests. \textit{Cancer}. 1950;3(1):32-35.
+
+\section{两步模型阈值确定方法}
+
+\subsection{Step 1 阈值 ($T_1$)：NPV优先原则}
+
+\textbf{目标}：在第一步排除低风险患者时，必须保证极高的NPV，避免漏诊。
+
+\textbf{选择标准}：
+\begin{enumerate}[itemsep=0pt]
+\item \textbf{NPV $\geq$ 95\%}：被排除的患者中，真阴性比例需达到95\%以上
+\item \textbf{排除率适度}：兼顾资源节省（10\%-35\%）
+\item \textbf{漏诊最小化}：FN（漏诊数）尽可能少
+\end{enumerate}
+
+\textbf{数学表达}：
+\begin{equation}
+T_1^* = \arg\max_{t} \left\{ \frac{n_{\text{excluded}}}{N} \;\middle|\; \text{NPV}(t) \geq 0.95 \right\}
+\end{equation}
+
+其中：
+\begin{equation}
+\text{NPV}(t) = \frac{\text{TN}_{\text{excluded}}}{\text{TN}_{\text{excluded}} + \text{FN}_{\text{excluded}}} = \frac{\sum_{i: p_i < t} \mathbb{1}(y_i=0)}{\sum_{i: p_i < t} 1}
+\end{equation}
+
+\subsection{Step 1 阈值选择实例}
+
+\subsubsection{M4 (Clinical-A) 在 Test 数据集}
+
+\begin{table}[H]
+\centering
+\caption{M4模型在Test数据集的Step 1阈值选择}
+\footnotesize
+\begin{tabular}{ccccccc}
+\toprule
+\textbf{候选阈值} & \textbf{排除人数} & \textbf{排除率} & \textbf{排除TN} & \textbf{排除FN} & \textbf{NPV} & \textbf{结论} \\
+\midrule
+0.03 & 5 & 9.8\% & 5 & 0 & 100\% & 候选 \\
+0.05 & 5 & 9.8\% & 5 & 0 & 100\% & 候选 \\
+\rowcolor{green!15}
+\textbf{0.07} & \textbf{6} & \textbf{11.8\%} & \textbf{6} & \textbf{0} & \textbf{100\%} & \textbf{选定} \\
+0.10 & 10 & 19.6\% & 8 & 2 & 80\% & NPV不足 \\
+0.15 & 14 & 27.5\% & 10 & 4 & 71\% & NPV不足 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\textbf{选择 $T_1 = 0.07$ 的理由}：
+\begin{itemize}[itemsep=0pt]
+\item NPV = 100\%（排除的6人全部是真阴性）
+\item 排除率 = 11.8\%（节省约12\%的高级检查资源）
+\item 漏诊 = 0人（完全安全）
+\end{itemize}
+
+\subsubsection{M4 (Clinical-A) 在 External 数据集}
+
+\begin{table}[H]
+\centering
+\caption{M4模型在External数据集的Step 1阈值选择}
+\footnotesize
+\begin{tabular}{cccccc}
+\toprule
+\textbf{候选阈值} & \textbf{排除人数} & \textbf{排除率} & \textbf{NPV} & \textbf{漏诊数} & \textbf{结论} \\
+\midrule
+0.10 & 20 & 20\% & 95.0\% & 1 & 候选 \\
+0.15 & 23 & 23\% & 95.7\% & 1 & 候选 \\
+\rowcolor{green!15}
+\textbf{0.19} & \textbf{25} & \textbf{25\%} & \textbf{96.0\%} & \textbf{1} & \textbf{选定} \\
+0.25 & 32 & 32\% & 87.5\% & 4 & NPV不足 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\textbf{选择 $T_1 = 0.19$ 的理由}：
+\begin{itemize}[itemsep=0pt]
+\item NPV = 96\%（接近最高可达值）
+\item 排除率 = 25\%（显著节省资源）
+\item 仅1人漏诊（临床可接受）
+\end{itemize}
+
+\subsection{Step 2 阈值 ($T_2$)}
+
+\textbf{目标}：在进入第二步的患者子集中做出最终诊断决策。
+
+\textbf{选择方法}：
+\begin{enumerate}[itemsep=0pt]
+\item 在Step 2子集上重新计算约登指数
+\item 或沿用M3单模型的最优阈值
+\item 根据临床需求微调（如需要更高敏感性）
+\end{enumerate}
+
+\section{最终阈值配置}
+
+\subsection{内部测试集 (Test, $n=51$)}
+
+\begin{table}[H]
+\centering
+\caption{内部测试集阈值配置}
+\begin{tabular}{lcccc}
+\toprule
+\textbf{策略} & \textbf{Step 1 阈值} ($T_1$) & \textbf{Step 2 阈值} ($T_2$) & \textbf{Step 1 NPV} & \textbf{排除率} \\
+\midrule
+M4$\rightarrow$M3 & 0.07 & 0.10 & 100\% & 12\% \\
+M5$\rightarrow$M3 & 0.30 & 0.09 & 92\% & 25\% \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{前瞻性测试集 (External, $n=100$)}
+
+\begin{table}[H]
+\centering
+\caption{前瞻性测试集阈值配置}
+\begin{tabular}{lcccc}
+\toprule
+\textbf{策略} & \textbf{Step 1 阈值} ($T_1$) & \textbf{Step 2 阈值} ($T_2$) & \textbf{Step 1 NPV} & \textbf{排除率} \\
+\midrule
+M4$\rightarrow$M3 & 0.19 & 0.04 & 96\% & 25\% \\
+M5$\rightarrow$M3 & 0.40 & 0.04 & 89\% & 35\% \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{阈值选择原则总结}
+
+\begin{table}[H]
+\centering
+\caption{阈值选择核心原则}
+\begin{tabular}{p{4cm}p{9cm}}
+\toprule
+\textbf{原则} & \textbf{说明} \\
+\midrule
+验证集确定，测试集验证 & 阈值在验证集上优化，在独立测试集上评估泛化性能 \\
+\midrule
+Step 1 安全优先 & NPV $\geq$ 95\%，最小化漏诊风险，确保被排除的患者安全 \\
+\midrule
+Step 2 准确性优先 & 约登指数最大化，平衡敏感性和特异性 \\
+\midrule
+整体性能约束 & 两步模型的整体性能应 $\geq$ 单模型性能 \\
+\midrule
+资源效益权衡 & 在保证诊断质量的前提下最大化资源节省 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{参考文献}
+
+\begin{enumerate}[itemsep=2pt]
+\item Youden WJ. Index for rating diagnostic tests. \textit{Cancer}. 1950;3(1):32-35.
+\item Fluss R, Faraggi D, Reiser B. Estimation of the Youden Index and its associated cutoff point. \textit{Biometrical Journal}. 2005;47(4):458-472.
+\item Perkins NJ, Schisterman EF. The inconsistency of "optimal" cutpoints obtained using two criteria based on the receiver operating characteristic curve. \textit{American Journal of Epidemiology}. 2006;163(7):670-675.
+\end{enumerate}
+
+\end{document}
