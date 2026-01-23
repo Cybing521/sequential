@@ -1,0 +1,37 @@
+\begin{table}[H]
+\centering
+\caption{序贯算法在内部测试集和前瞻性测试集的诊断准确性}
+\label{tab:diagnostic_accuracy}
+\begin{tabular}{llccccccc}
+\toprule
+\textbf{数据集} & \textbf{算法} & \textbf{阈值} & \textbf{准确率} & \textbf{敏感性} & \textbf{特异性} & \textbf{PPV} & \textbf{NPV} \\
+\midrule
+
+\multirow{5}{*}{\shortstack[l]{\textbf{'内部' if split_name == 'Internal' else '前瞻性'}测试集}\\($n=51$)} & M3 & 0.98 & 80 (41/51) & 82 (18/22) & 79 (23/29) & 75 (18/24) & 85 (23/27) \\
+\rowcolor{lightgray}
+ & M4 & 0.18* & 61 (31/51) & 82 (18/22) & 45 (13/29) & 53 (18/34) & 76 (13/17) \\
+
+ & M5 & 0.53 & 69 (35/51) & 68 (15/22) & 69 (20/29) & 62 (15/24) & 74 (20/27) \\
+\rowcolor{lightgray}
+ & M4$\rightarrow$M3 & 0.18; 0.98 & 80 (41/51) & 73 (16/22) & 86 (25/29) & 80 (16/20) & 81 (25/31) \\
+
+ & M5$\rightarrow$M3 & 0.53; 0.98 & 76 (39/51) & 59 (13/22) & 90 (26/29) & 81 (13/16) & 74 (26/35) \\
+\midrule
+
+\multirow{5}{*}{\shortstack[l]{\textbf{'内部' if split_name == 'Internal' else '前瞻性'}测试集}\\($n=100$)} & M3 & 0.98 & 79 (79/100) & 67 (26/39) & 87 (53/61) & 76 (26/34) & 80 (53/66) \\
+\rowcolor{lightgray}
+ & M4 & 0.18* & 62 (62/100) & 97 (38/39) & 39 (24/61) & 51 (38/75) & 96 (24/25) \\
+
+ & M5 & 0.53 & 69 (69/100) & 79 (31/39) & 62 (38/61) & 57 (31/54) & 83 (38/46) \\
+\rowcolor{lightgray}
+ & M4$\rightarrow$M3 & 0.18; 0.98 & 79 (79/100) & 64 (25/39) & 89 (54/61) & 78 (25/32) & 79 (54/68) \\
+
+ & M5$\rightarrow$M3 & 0.53; 0.98 & 77 (77/100) & 56 (22/39) & 90 (55/61) & 79 (22/28) & 76 (55/72) \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}
+\small
+\item 注：数据为百分比，括号内为原始计数。* 表示阈值 < 0.5。
+\item 阈值在验证集上确定：第一步采用NPV优先原则，第二步采用约登指数。
+\end{tablenotes}
+\end{table}

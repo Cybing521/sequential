@@ -1,0 +1,127 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[UTF8]{ctex}
+\usepackage{geometry}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{float}
+\usepackage{xcolor}
+\usepackage{colortbl}
+\usepackage{caption}
+\usepackage{amsmath}
+\usepackage{threeparttable}
+
+\geometry{margin=2.5cm}
+\definecolor{lightgray}{gray}{0.9}
+
+\title{序贯筛查算法诊断性能评估报告}
+\author{研究团队}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\section{研究概述}
+
+本报告评估了单模型和两步序贯筛查算法在内部测试集和前瞻性测试集上的诊断性能。
+
+\subsection{阈值确定方法}
+\begin{itemize}
+    \item \textbf{NPV优先原则}：第一步（M4/M5）选择保证高NPV的阈值，优先减少漏诊
+    \item \textbf{约登指数}：第二步（M3）采用约登指数最大化确定阈值
+\end{itemize}
+
+\subsection{模型说明}
+\begin{itemize}
+    \item M3: 影像组学+全部临床特征模型
+    \item M4: 临床A特征模型
+    \item M5: 基础临床特征模型
+    \item M4→M3: 两步法，第一步用M4筛除，第二步用M3确认
+    \item M5→M3: 两步法，第一步用M5筛除，第二步用M3确认
+\end{itemize}
+
+\section{Table 3: 诊断准确性}
+
+\input{table3.tex}
+
+\section{Table 4: 转诊影响}
+
+\input{table4.tex}
+
+\section{患者流程图（桑基图）}
+
+\begin{figure}[H]
+\centering
+\begin{minipage}{0.48\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{figures/sankey_Internal_M4_to_M3.png}
+    \caption*{(a) 内部测试集 M4→M3}
+\end{minipage}
+\hfill
+\begin{minipage}{0.48\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{figures/sankey_Internal_M5_to_M3.png}
+    \caption*{(b) 内部测试集 M5→M3}
+\end{minipage}
+
+\vspace{1em}
+
+\begin{minipage}{0.48\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{figures/sankey_Prospective_M4_to_M3.png}
+    \caption*{(c) 前瞻性测试集 M4→M3}
+\end{minipage}
+\hfill
+\begin{minipage}{0.48\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{figures/sankey_Prospective_M5_to_M3.png}
+    \caption*{(d) 前瞻性测试集 M5→M3}
+\end{minipage}
+\caption{两步序贯筛查算法的患者流程图}
+\end{figure}
+
+\section{PPV/NPV 曲线}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.95\textwidth]{figures/ppv_npv_curves_57_37.png}
+\caption{不同患病率下的PPV和NPV曲线（红线标记实际患病率：内部57\%，前瞻性37\%）}
+\end{figure}
+
+\section{方法学说明}
+
+\subsection{阈值确定方法}
+\begin{enumerate}
+    \item \textbf{第一步阈值（M4/M5）}：采用NPV优先原则
+    \item \textbf{第二步阈值（M3）}：约登指数最大化
+\end{enumerate}
+
+\subsection{验证集确定的阈值}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{lcc}
+\toprule
+\textbf{模型} & \textbf{阈值} & \textbf{确定方法} \\
+\midrule
+M3 & 0.984 & 约登指数 \\
+M4 & 0.18 & NPV优先 \\
+M5 & 0.53 & NPV优先 \\
+\bottomrule
+\end{tabular}
+\caption{验证集上确定的阈值}
+\end{table}
+
+\section{结论}
+
+\begin{enumerate}
+    \item \textbf{单模型比较}：M3在准确率和特异性上表现最优
+    \item \textbf{两步法效益}：
+    \begin{itemize}
+        \item M4→M3：准确率80\%/79\%，减少转诊33\%/25\%
+        \item M5→M3：准确率76\%/77\%，减少转诊53\%/46\%
+    \end{itemize}
+    \item \textbf{M4→M3优于M5→M3}：在准确率、敏感性、NPV上均更优
+\end{enumerate}
+
+\end{document}

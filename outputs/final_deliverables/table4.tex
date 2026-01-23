@@ -1,0 +1,26 @@
+\begin{table}[H]
+\centering
+\caption{序贯算法在内部测试集和前瞻性测试集的转诊影响}
+\label{tab:referral_impact}
+\begin{tabular}{llccc}
+\toprule
+\textbf{算法} & \textbf{对照} & \textbf{减少转诊 (\%)} & \textbf{Odds Ratio (95\% CI)} & \textbf{P值} \\
+\midrule
+\multicolumn{5}{l}{\textit{内部测试集}} \\
+\rowcolor{lightgray}
+M4$\rightarrow$M3 & M3 & 33 & 0.59 (0.14, 2.48) & 0.721 \\
+
+M5$\rightarrow$M3 & M3 & 53 & 0.32 (0.08, 1.27) & 0.185 \\
+\midrule
+\multicolumn{5}{l}{\textit{前瞻性测试集}} \\
+\rowcolor{lightgray}
+M4$\rightarrow$M3 & M3 & 25 & 0.89 (0.35, 2.27) & 1.000 \\
+
+M5$\rightarrow$M3 & M3 & 46 & 0.65 (0.26, 1.62) & 0.485 \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}
+\small
+\item 注：Odds Ratio 括号内为 95\% 置信区间。P 值来自 Fisher 精确检验。
+\end{tablenotes}
+\end{table}
